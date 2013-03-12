@@ -1,7 +1,7 @@
 {
 	"name": "grunt-grunticon",
 	"description": "A mystical CSS icon solution",
-	"version": "0.1.7",
+	"version": "0.1.6",
 	"homepage": "https://github.com/filamentgroup/grunticon",
 	"author": {
 		"name": "Scott Jehl",
@@ -23,15 +23,13 @@
 	],
 	"main": "tasks/grunticon",
 	"engines": {
-		"node": "~0.8.0"
+		"node": "*"
 	},
 	"scripts": {
 		"test": "grunt test"
 	},
 	"dependencies": {
-		"grunt": "~0.4.0",
-		"grunt-contrib-jshint": "~0.2.0",
-		"uglify-js": "~2.2.5"
+		"grunt": "~0.3.9"
 	},
 	"keywords": [
 		"gruntplugin"
