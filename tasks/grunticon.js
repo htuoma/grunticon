@@ -17,6 +17,16 @@ module.exports = function( grunt , undefined ) {
 	var fs = require( 'fs' );
 
 	var RSVP = require( '../lib/rsvp' );
+	var toAbsolutePath = require('path').resolve;
+	var runTerminal = require('child_process').exec;
+	var imageOptimCliPath = toAbsolutePath(__dirname, '../node_modules/imageoptim-cli/bin');
+	var terminalCommand = (function(options) {
+		var command = './imageOptim';
+		if (options.quitAfter) { command += ' --quit'; }
+		if (options.imageAlpha) { command += ' --image-alpha'; }
+		if (options.jpegMini) { command += ' --jpeg-mini'; }
+		return command + ' --directory';
+	}({}));
 
 	var readDir = function( path ){
 		var promise = new RSVP.Promise();
@@ -76,6 +86,34 @@ module.exports = function( grunt , undefined ) {
 			}
 		});
 		return promise;
+	};
+
+	var optPNG = function( dir , callback ){
+		grunt.log.write( "Optimizing using ImageOptim-CLI" );
+
+		// a reference to the ImageOptim-CLI process running in the terminal
+		var imageOptim;
+
+		// an absolute path to this folder
+		var fullPath = toAbsolutePath(dir);
+
+		// the absolute path with whitespace escaped for the terminal
+		var escapedFullPath = fullPath.replace(/\s/g, '\\ ');
+
+		// apply the base ImageOptim-CLI command to this folder
+		var execImageOptim = terminalCommand + ' ' + escapedFullPath;
+
+		// update on progress
+		grunt.log.writeln('Processing "' + fullPath + '"');
+
+		// run ImageOptim-CLI with the current working directory set to ImageOptim-CLI's bin folder
+		imageOptim = runTerminal(execImageOptim, {
+			cwd: imageOptimCliPath
+		}, null);
+
+		// After we've processed the last folder we can quit
+		imageOptim.on('exit', callback);
+
 	};
 
 	grunt.registerMultiTask( 'grunticon', 'A mystical CSS icon solution.', function() {
@@ -255,7 +293,7 @@ module.exports = function( grunt , undefined ) {
 				} else {
 					grunt.log.write( result.stdout );
 					grunt.file.delete( tmp );
-					done();
+					optPNG( config.dest + "png" , done );
 				}
 			});
 		});
