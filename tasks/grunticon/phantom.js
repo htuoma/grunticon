@@ -24,6 +24,10 @@ phantom args sent from grunticon.js:
 	[9] - css classname prefix
 	[10] - css basepath prefix
 	[11] - custom CSS selectors
+	[12] - default width
+	[13] - default height
+	[14] - colors
+	[15] - pngcrush path
 */
 
 (function(){
@@ -46,7 +50,8 @@ phantom args sent from grunticon.js:
 		customselectors: phantom.args[11],
 		defaultWidth: phantom.args[12],
 		defaultHeight: phantom.args[13],
-		colors: phantom.args[14]
+		colors: phantom.args[14],
+		crushPath: phantom.args[15]
 	};
 
 	var files = fs.list( options.inputdir );

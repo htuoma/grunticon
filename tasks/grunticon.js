@@ -17,7 +17,7 @@ module.exports = function( grunt , undefined ) {
 	var fs = require( 'fs' );
 
 	var RSVP = require( '../lib/rsvp' );
-	var crusher = require( '../lib/pngcrusher' );
+	var crushPath = require( 'pngcrush-installer' ).getBinPath();
 
 	var readDir = function( path ){
 		var promise = new RSVP.Promise();
@@ -77,14 +77,6 @@ module.exports = function( grunt , undefined ) {
 			}
 		});
 		return promise;
-	};
-
-	var crush = function( options , callback ){
-		var promise = RSVP.Promise();
-		crusher.crush( options , function(){
-			promise.resolve();
-		});
-		return promise();
 	};
 
 	grunt.registerMultiTask( 'grunticon', 'A mystical CSS icon solution.', function() {
@@ -252,7 +244,8 @@ module.exports = function( grunt , undefined ) {
 					customselectors,
 					width,
 					height,
-					colors
+					colors,
+					crushPath
 				],
 				fallback: ''
 			}, function(err, result, code) {
@@ -264,7 +257,7 @@ module.exports = function( grunt , undefined ) {
 				} else {
 					grunt.log.write( result.stdout );
 					grunt.file.delete( tmp );
-					crush();
+					done();
 				}
 			});
 		});
