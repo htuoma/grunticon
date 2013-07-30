@@ -271,7 +271,9 @@ module.exports = function( grunt , undefined ) {
 					input: tmp + pngfolder,
 					outputDir:  config.dest + pngfolder,
 					crushPath: crushPath
-				}, function(){
+				}, function( stdout , stderr ){
+					grunt.verbose.write( stdout );
+					grunt.verbose.write( stderr );
 					callPhantom( pngfolder, render, writeCSS, function(err, result, code) {
 						// TODO boost this up a bit.
 						if( err ){
