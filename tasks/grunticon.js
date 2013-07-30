@@ -161,6 +161,16 @@ module.exports = function( grunt , undefined ) {
 		var svgosrc = config.src;
 		var tmp = path.join( config.dest , 'tmp' , path.sep );
 
+		var compressPNG = config.pngcrush,
+			render, writeCSS;
+
+		if( compressPNG !== false ){
+			render = true;
+			writeCSS = false;
+		} else {
+			render = true;
+			writeCSS = true;
+		}
 
 		// create temp directory
 		grunt.log.write( "creating temp directory at:" + tmp );
@@ -224,43 +234,52 @@ module.exports = function( grunt , undefined ) {
 			grunt.file.write( loaderCodeDest, min );
 			grunt.log.write( "\ngrunticon loader file created." );
 
-			// take it to phantomjs to do the rest
-			grunt.log.write( "\ngrunticon now spawning phantomjs..." );
-			var phantomJsPath = require('phantomjs').path;
-			grunt.log.write('(using path: ' + phantomJsPath + ')');
+
+
+			var callPhantom = function( pngf, temp, writeCSS , callback){
+				// take it to phantomjs to do the rest
+				grunt.log.write( "\ngrunticon now spawning phantomjs..." );
+				var phantomJsPath = require('phantomjs').path;
+				grunt.log.write('(using path: ' + phantomJsPath + ')');
+
+				grunt.util.spawn({
+					cmd: phantomJsPath,
+					args: [
+						config.files.phantom,
+						tmp,
+						config.dest,
+						loaderCodeDest,
+						previewHTMLsrc,
+						datasvgcss,
+						datapngcss,
+						urlpngcss,
+						previewhtml,
+						pngf, //path.join( "tmp","png", path.sep),
+						cssprefix,
+						cssbasepath,
+						customselectors,
+						width,
+						height,
+						colors,
+						temp,
+						writeCSS
+					],
+					fallback: ''
+				}, callback );
+			};
 
 			var crush = function( pngfolder ){
 				grunt.log.write( "\ngrunticon now spawning pngcrush..." );
 				grunt.log.write('(using path: ' + crushPath + ')');
+				var render = false;
+				var writeCSS = true;
+
 				crusher.crush({
 					input: tmp + pngfolder,
 					outputDir:  config.dest + pngfolder,
 					crushPath: crushPath
 				}, function(){
-					grunt.log.write( "\ngrunticon now spawning phantomjs..." );
-					grunt.util.spawn({
-						cmd: phantomJsPath,
-						args: [
-							config.files.phantom,
-							tmp,
-							config.dest,
-							loaderCodeDest,
-							previewHTMLsrc,
-							datasvgcss,
-							datapngcss,
-							urlpngcss,
-							previewhtml,
-							pngfolder,
-							cssprefix,
-							cssbasepath,
-							customselectors,
-							width,
-							height,
-							colors,
-							true
-						],
-						fallback: ''
-					}, function(err, result, code) {
+					callPhantom( pngfolder, render, writeCSS, function(err, result, code) {
 						// TODO boost this up a bit.
 						if( err ){
 							grunt.log.write("\nSomething went wrong with phantomjs...");
@@ -275,28 +294,14 @@ module.exports = function( grunt , undefined ) {
 				});
 			};
 
-			grunt.util.spawn({
-				cmd: phantomJsPath,
-				args: [
-					config.files.phantom,
-					tmp,
-					config.dest,
-					loaderCodeDest,
-					previewHTMLsrc,
-					datasvgcss,
-					datapngcss,
-					urlpngcss,
-					previewhtml,
-					path.join( "tmp","png", path.sep),
-					cssprefix,
-					cssbasepath,
-					customselectors,
-					width,
-					height,
-					colors
-				],
-				fallback: ''
-			}, function(err, result, code) {
+			// Get this party started
+			var pngpath;
+			if( render && writeCSS ){
+				pngpath = pngfolder;
+			} else {
+				pngpath = path.join( "tmp", "png", path.sep );
+			}
+			callPhantom( pngpath, render, writeCSS, function(err, result, code) {
 				// TODO boost this up a bit.
 				if( err ){
 					grunt.log.write("\nSomething went wrong with phantomjs...");
@@ -304,9 +309,15 @@ module.exports = function( grunt , undefined ) {
 					done( false );
 				} else {
 					grunt.log.write( result.stdout );
-					crush( pngfolder );
+					if( render && writeCSS ){
+						grunt.file.delete( tmp );
+						done();
+					} else {
+						crush( pngfolder );
+					}
 				}
 			});
+
 		});
 	});
 };
