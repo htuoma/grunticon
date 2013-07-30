@@ -164,13 +164,6 @@ module.exports = function( grunt , undefined ) {
 		var compressPNG = config.pngcrush,
 			render, writeCSS;
 
-		if( compressPNG !== false ){
-			render = true;
-			writeCSS = false;
-		} else {
-			render = true;
-			writeCSS = true;
-		}
 
 		// create temp directory
 		grunt.log.write( "creating temp directory at:" + tmp );
@@ -295,6 +288,14 @@ module.exports = function( grunt , undefined ) {
 			};
 
 			// Get this party started
+			if( compressPNG !== false ){
+				render = true;
+				writeCSS = false;
+			} else {
+				render = true;
+				writeCSS = true;
+			}
+
 			var pngpath;
 			if( render && writeCSS ){
 				pngpath = pngfolder;
