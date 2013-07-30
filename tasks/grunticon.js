@@ -15,10 +15,11 @@ module.exports = function( grunt , undefined ) {
 	var uglify = require( 'uglify-js' );
 	var svgo = new (require( 'svgo' ))();
 	var fs = require( 'fs' );
+	var path = require( 'path' );
 
-	var RSVP = require( '../lib/rsvp' );
+	var RSVP = require( path.join( '..', 'lib', 'rsvp' ) );
 	var crushPath = require( 'pngcrush-installer' ).getBinPath();
-	var crusher = require( '../lib/pngcrusher' );
+	var crusher = require( path.join( '..', 'lib', 'pngcrusher' ) );
 
 	var readDir = function( path ){
 		var promise = new RSVP.Promise();
@@ -91,10 +92,10 @@ module.exports = function( grunt , undefined ) {
 		var config = this.options();
 
 		config.files = {
-			loader: __dirname + "/grunticon/static/grunticon.loader.js",
-			banner: __dirname + "/grunticon/static/grunticon.loader.banner.js",
-			preview: __dirname + "/grunticon/static/preview.html",
-			phantom: __dirname + "/grunticon/phantom.js"
+			loader: path.join( __dirname, 'grunticon', 'static', 'grunticon.loader.js'),
+			banner: path.join( __dirname, 'grunticon', 'static', 'grunticon.loader.banner.js'),
+			preview: path.join( __dirname, 'grunticon', 'static', 'preview.html'),
+			phantom: path.join( __dirname,  'grunticon', 'phantom.js')
 		};
 		// fail if config or no src or dest config
 		if( !config || config.src === undefined || config.dest === undefined ){
@@ -103,11 +104,11 @@ module.exports = function( grunt , undefined ) {
 		}
 
 		// make sure src and dest have / at the end
-		if( !config.src.match( /\/$/ ) ){
-				config.src += "/";
+		if( !config.src.match( path.sep + '$' ) ){
+				config.src += path.sep;
 		}
-		if( !config.dest.match( /\/$/ ) ){
-				config.dest += "/";
+		if( !config.dest.match( path.sep + '$' ) ){
+				config.dest += path.sep;
 		}
 
 
@@ -127,15 +128,15 @@ module.exports = function( grunt , undefined ) {
 		var loadersnippet = config.loadersnippet || "grunticon.loader.txt";
 
 		// css references base path for the loader
-		var cssbasepath = config.cssbasepath || "/";
+		var cssbasepath = config.cssbasepath || path.sep;
 
 		var customselectors = JSON.stringify( config.customselectors ) || "{}";
 
 		// folder name (within the output folder) for generated png files
-		var pngfolder = config.pngfolder || "png/";
+		var pngfolder = config.pngfolder || "png" + path.sep;
 		// make sure pngfolder has / at the end
-		if( !pngfolder.match( /\/$/ ) ){
-				pngfolder += "/";
+		if( !pngfolder.match( path.sep + '$' ) ){
+				pngfolder += path.sep;
 		}
 
 		// css class prefix
@@ -158,7 +159,7 @@ module.exports = function( grunt , undefined ) {
 		var colors = JSON.stringify( config.colors || {} );
 
 		var svgosrc = config.src;
-		var tmp = config.dest + "/tmp/";
+		var tmp = path.join( config.dest , 'tmp' , path.sep );
 
 
 		// create temp directory
@@ -286,7 +287,7 @@ module.exports = function( grunt , undefined ) {
 					datapngcss,
 					urlpngcss,
 					previewhtml,
-					"tmp/png/",
+					path.join( "tmp","png", path.sep),
 					cssprefix,
 					cssbasepath,
 					customselectors,
