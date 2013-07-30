@@ -31,6 +31,7 @@ phantom args sent from grunticon.js:
 */
 
 (function(){
+	"use strict";
 	var fs = require( "fs" );
 	var RSVP = require('../../lib/rsvp');
 	var grunticoner = require('../../lib/grunticoner');
@@ -61,6 +62,11 @@ phantom args sent from grunticon.js:
 	var colorsRegx = /\.colors\-([^\.]+)/i;
 	var tempFiles = [];
 
+	// test if value is a valid hex
+	var isHex = function( val ){
+		return (/^[0-9a-f]{3}(?:[0-9a-f]{3})?$/i).test( val );
+	};
+
 	var getColorConfig = function( str ){
 		var colors = str.match( colorsRegx );
 		if( colors ){
@@ -77,10 +83,6 @@ phantom args sent from grunticon.js:
 		}
 	}; //getColorConfig
 
-	// test if value is a valid hex
-	var isHex = function( val ){
-		return /^[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test( val );
-	};
 
 	var colors = JSON.parse( options.colors );
 
