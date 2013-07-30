@@ -27,7 +27,7 @@ phantom args sent from grunticon.js:
 	[12] - default width
 	[13] - default height
 	[14] - colors
-	[15] - pngcrush path
+	[15] - if files have been crushed
 */
 
 (function(){
@@ -52,7 +52,7 @@ phantom args sent from grunticon.js:
 		defaultWidth: phantom.args[12],
 		defaultHeight: phantom.args[13],
 		colors: phantom.args[14],
-		crushPath: phantom.args[15]
+		writeCSS: phantom.args[15]
 	};
 
 	var files = fs.list( options.inputdir );
@@ -140,7 +140,9 @@ phantom args sent from grunticon.js:
 
 
 	RSVP.all( promises ).then( function( dataarr ){
-		grunticoner.writeCSS( dataarr , options );
+		if( options.writeCSS ){
+			grunticoner.writeCSS( dataarr , options );
+		}
 		deleteTempFiles();
 		phantom.exit();
 	});
