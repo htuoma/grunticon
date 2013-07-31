@@ -94,10 +94,6 @@ phantom args sent from grunticon.js:
 		});
 	};
 
-
-
-
-
 	files = files.filter( function( file ){
 		var svgRegex = /\.svg$/i,
 			pngRegex = /\.png$/i,
