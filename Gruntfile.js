@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		test: {
+		nodeunit: {
 			files: ['test/**/*.js']
 		},
 		lint: {
@@ -92,6 +92,7 @@ module.exports = function(grunt) {
 	grunt.loadTasks('tasks');
 
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+	grunt.loadNpmTasks( 'grunt-contrib-nodeunit' );
 
 	// Default task.
 	grunt.registerTask('default', ['jshint', 'grunticon:foo']);
