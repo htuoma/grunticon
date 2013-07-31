@@ -35,6 +35,24 @@
 				var g = new GruntiFile();
 			}, Error, "Must initialize Gruntifile with filename" );
 			test.done();
+		},
+		'initialize with filename that is svg': function( test ){
+			test.expect( 3 );
+			var filename = "foo.svg";
+			var g = new GruntiFile( filename );
+			test.equal( g.filename , filename );
+			test.equal( g.filenamenoext , "foo" );
+			test.ok( g.isSvg );
+			test.done();
+		},
+		'initialize with filename that is png': function( test ){
+			test.expect( 3 );
+			var filename = "foo.png";
+			var g = new GruntiFile( filename );
+			test.equal( g.filename , filename );
+			test.equal( g.filenamenoext , "foo" );
+			test.ok( !g.isSvg );
+			test.done();
 		}
 		/**
 		'getFileContent no args': function(test) {
