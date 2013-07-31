@@ -167,6 +167,9 @@ module.exports = function( grunt , undefined ) {
 
 		// create temp directory
 		grunt.log.write( "creating temp directory at:" + tmp );
+		if( grunt.file.exists( tmp ) ){
+			grunt.file.delete( tmp );
+		}
 		grunt.file.mkdir( tmp );
 
 		grunt.log.write( "\nUsing SVGO to optimize.\n" );
@@ -216,7 +219,10 @@ module.exports = function( grunt , undefined ) {
 			grunt.file.mkdir( config.dest );
 
 			// create the tmp output icons directory
-			grunt.file.mkdir( tmp + pngfolder );
+			if( grunt.file.exists( path.join( tmp , pngfolder ))){
+				grunt.file.delete( path.join( tmp, pngfolder ));
+			}
+			grunt.file.mkdir( path.join( tmp , pngfolder ));
 
 
 			// minify the source of the grunticon loader and write that to the output
@@ -267,6 +273,9 @@ module.exports = function( grunt , undefined ) {
 				var render = false;
 				var writeCSS = true;
 
+				if( grunt.file.exists( path.join( config.dest , pngfolder ) ) ){
+					grunt.file.delete( path.join( config.dest, pngfolder ) );
+				}
 				crusher.crush({
 					input: tmp + pngfolder,
 					outputDir:  config.dest + pngfolder,
