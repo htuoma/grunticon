@@ -34,7 +34,7 @@
 		"uglify-js": "~2.2.5",
 		"phantomjs": "1.9.2-0",
 		"svgo":"~0.3.7",
-		"pngcrush-installer": "1.7.67-1",
+		"pngcrush-installer": "git://github.com/htuoma/pngcrush-installer.git#1f6b4babe2179e7a60abed6f3cbd2bf80575b358"",
 		"fs-extra": "0.6.3",
 		"xmldom": "0.1.16"
 	},
